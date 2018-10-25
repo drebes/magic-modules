@@ -104,7 +104,9 @@ module Api
 
       def validate
         super
-        check_property :kind, String
+        default_value_property :items, 'items'
+
+        check_optional_property :kind, String
         check_property :items, String
       end
 
@@ -251,7 +253,13 @@ module Api
       check_optional_property :transport, Transport
       check_optional_property :references, ReferenceLinks
 
+      default_value_property :collection_url_response,
+        Api::Resource::ResponseList.new
+      check_property :collection_url_response, Api::Resource::ResponseList
+
       check_property :properties, Array unless @exclude
+      default_value_property :collection_url_response,
+        Api::Resource::ResponseList.new
 
       check_property_oneof_default :create_verb, %i[POST PUT], :POST, Symbol
       check_property_oneof_default \
