@@ -13,13 +13,30 @@ apis_required:
     url: https://console.cloud.google.com/apis/library/privateca.googleapis.com/
 objects:
   - !ruby/object:Api::Resource
-    name: 'CertificateAuthorities'
+    name: 'CertificateAuthority'
     base_url: 'projects/{{project}}/locations/{{location}}/certificateAuthorities'
     create_url: 'projects/{{project}}/locations/{{location}}/certificateAuthorities?certificateAuthorityId={{name}}'
     self_link: 'projects/{{project}}/locations/{{location}}/certificateAuthorities/{{name}}'
     input: true
+    async: !ruby/object:Api::OpAsync
+      operation: !ruby/object:Api::OpAsync::Operation
+        path: 'name'
+        base_url: '{{op_id}}'
+        wait_ms: 1000
+      result: !ruby/object:Api::OpAsync::Result
+        path: 'response'
+        resource_inside_response: true
+      status: !ruby/object:Api::OpAsync::Status
+        path: 'done'
+        complete: True
+        allowed:
+          - True
+          - False
+      error: !ruby/object:Api::OpAsync::Error
+        path: 'error'
+        message: 'message'
     description: |
-      A `CertificateAuthorities` is a toplevel logical grouping of `CertificateAuthority`.
+      A `CertificateAuthority` represents an individual Certificate Authority. A `CertificateAuthority` can be used to create Certificates.
     parameters:
       - !ruby/object:Api::Type::String
         name: 'location'
@@ -35,6 +52,7 @@ objects:
         description: |
           Output only. The resource name for this CertificateAuthority in the format projects/*/locations/*/certificateAuthorities/*.
         required: true
+        url_param_only: true
       - !ruby/object:Api::Type::Enum
         name: 'type'
         required: true
@@ -76,37 +94,30 @@ objects:
                     name: 'countryCode'
                     description: |
                       The country code of the subject.
-                    required: true
                   - !ruby/object:Api::Type::String
                     name: 'organization'
                     description: |
                       The organization of the subject.
-                    required: true
                   - !ruby/object:Api::Type::String
                     name: 'organizationalUnit'
                     description: |
                       The organizationalUnit of the subject.
-                    required: true
                   - !ruby/object:Api::Type::String
                     name: 'locality'
                     description: |
                       The locality or city of the subject.
-                    required: true
                   - !ruby/object:Api::Type::String
                     name: 'province'
                     description: |
                       The province of the subject.
-                    required: true
                   - !ruby/object:Api::Type::String
                     name: 'streetAddress'
                     description: |
                       The streetAddress or city of the subject.
-                    required: true
                   - !ruby/object:Api::Type::String
                     name: 'postalCode'
                     description: |
                       The postalCode or city of the subject.
-                    required: true
               - !ruby/object:Api::Type::NestedObject
                 name: 'subjectAltName'
                 description: |
@@ -786,6 +797,7 @@ objects:
             name: 'crlAccessUrl'
             description: |
                 The URL where this CertificateAuthority's CRLs are published. This will only be set for CAs that have been activated.
+        output: true
       - !ruby/object:Api::Type::Time
         name: 'createTime'
         description: |
@@ -1483,10 +1495,6 @@ objects:
                   - "KEY_TYPE_UNSPECIFIED"
                   - "PEM_RSA_KEY"
                   - "PEM_EC_KEY"
-
-
-          
-
     references: !ruby/object:Api::Resource::ReferenceLinks
       guides:
         'Creating a Certificate':
