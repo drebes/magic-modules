@@ -12,26 +12,14 @@
 # limitations under the License.
 
 --- !ruby/object:Provider::Terraform::Config
-# overrides: !ruby/object:Overrides::ResourceOverrides
-#   CertificateAuthorities: !ruby/object:Overrides::Terraform::ResourceOverride
-#       description: |
-#         {{description}}
-#         ~> **Note:** CertificateAuthorities cannot be deleted from Google Cloud Platform.
-#         Destroying a Terraform-managed KeyRing will remove it from state but
-#         *will not delete the resource on the server.*
-#       id_format: "projects/{{project}}/locations/{{location}}/certificateAuthorities/{{name}}"
-#       import_format: ["projects/{{project}}/locations/{{location}}/certificateAuthorities/{{name}}"]
-#       skip_delete: true
-#       properties:
-#         createTime: !ruby/object:Overrides::Terraform::PropertyOverride
-#           exclude: true
-#         location: !ruby/object:Overrides::Terraform::PropertyOverride
-#           ignore_read: true
-#       custom_code: !ruby/object:Provider::Terraform::CustomCode
-#         decoder: templates/terraform/decoders/long_name_to_self_link.go.erb
-#         encoder: templates/terraform/encoders/send_nil_body.go.erb
-
-
+overrides: !ruby/object:Overrides::ResourceOverrides
+  CertificateAuthority: !ruby/object:Overrides::Terraform::ResourceOverride
+      autogen_async: true
+      examples:
+      - !ruby/object:Provider::Terraform::Examples
+        min_version: beta
+        name: "certificate_authority_basic"
+        primary_resource_id: "root_ca"
 files: !ruby/object:Provider::Config::Files
   # These files have templating (ERB) code that will be run.
   # This is usually to add licensing info, autogeneration notices, etc.
