@@ -1,0 +1,30 @@
+if d.Get("disable_on_delete").(bool) {
+	// TODO(drebes) - Check the status and only disable if it is enabled
+	url, err := replaceVars(d, config, "{{PrivateCABasePath}}projects/{{project}}/locations/{{location}}/certificateAuthorities/{{name}}:disable")
+        if err != nil {
+                return err
+        }
+
+        var obj map[string]interface{}
+        log.Printf("[DEBUG] Disabling CertificateAuthority %q", d.Id())
+
+        // err == nil indicates that the billing_project value was found
+        if bp, err := getBillingProject(d, config); err == nil {
+                billingProject = bp
+        }
+
+        res, err := sendRequestWithTimeout(config, "POST", billingProject, url, userAgent, obj, d.Timeout(schema.TimeoutDelete))
+        if err != nil {
+                return handleNotFoundError(err, d, "CertificateAuthority")
+        }
+
+        err = privateCAOperationWaitTime(
+                config, res, project, "Disabling CertificateAuthority", userAgent,
+                d.Timeout(schema.TimeoutDelete))
+
+        if err != nil {
+                return err
+        }
+
+        log.Printf("[DEBUG] Finished disabling CertificateAuthority %q: %#v", d.Id(), res)
+}

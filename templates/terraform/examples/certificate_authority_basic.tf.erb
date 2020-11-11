@@ -23,4 +23,6 @@ resource "google_private_ca_certificate_authority" "<%= ctx[:primary_resource_id
       reusable_config= "projects/568668481468/locations/us-central1/reusableConfigs/root-unconstrained"
     }
   }
+
+  disable_on_delete = true
 }

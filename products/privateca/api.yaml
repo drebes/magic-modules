@@ -16,8 +16,10 @@ objects:
     name: 'CertificateAuthority'
     base_url: 'projects/{{project}}/locations/{{location}}/certificateAuthorities'
     create_url: 'projects/{{project}}/locations/{{location}}/certificateAuthorities?certificateAuthorityId={{name}}'
+    delete_url: 'projects/{{project}}/locations/{{location}}/certificateAuthorities/{{name}}:scheduleDelete'
+    delete_verb: :POST
+    update_verb: :PATCH
     self_link: 'projects/{{project}}/locations/{{location}}/certificateAuthorities/{{name}}'
-    input: true
     async: !ruby/object:Api::OpAsync
       operation: !ruby/object:Api::OpAsync::Operation
         path: 'name'
@@ -62,6 +64,7 @@ objects:
           - "TYPE_UNSPECIFIED"
           - "SELF_SIGNED"
           - "SUBORDINATE"
+        input: true
       - !ruby/object:Api::Type::Enum
         name: 'tier'
         description: |
@@ -70,6 +73,7 @@ objects:
           - "TIER_UNSPECIFIED"
           - "ENTERPRISE"
           - "DEVOPS"
+        input: true
       - !ruby/object:Api::Type::NestedObject
         name: 'config'
         description: |
@@ -364,11 +368,13 @@ objects:
                   - "KEY_TYPE_UNSPECIFIED"
                   - "PEM_RSA_KEY"
                   - "PEM_EC_KEY"
+        input: true
       - !ruby/object:Api::Type::String
         name: 'lifetime'
         description: |
           The desired lifetime of the CA certificate. Used to create the "notBeforeTime" and "notAfterTime" fields inside an X.509 certificate.
         required: true
+        input: true
       - !ruby/object:Api::Type::NestedObject
         name: 'keySpec'
         # required: true
@@ -399,6 +405,7 @@ objects:
               - "RSA_PKCS1_4096_SHA256"
               - "EC_P256_SHA256"
               - "EC_P384_SHA384"
+        input: true
       - !ruby/object:Api::Type::NestedObject
         name: 'certificatePolicy'
         description: |
